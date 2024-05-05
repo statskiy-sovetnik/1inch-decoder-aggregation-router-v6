@@ -4,7 +4,6 @@ pragma solidity ^0.8.24;
 import "./IAspisDecoder.sol";
 import "./1inchProtocolLib.sol";
 import "./IAggregationRouterV6.sol";
-import "hardhat/console.sol";
 
 interface IUniswapPool {
     function token0() external view returns (address);
@@ -59,7 +58,6 @@ contract OneInchV6Decoder is IAspisDecoder {
             );
 
             address destToken = getDestTokenFromDex(_dex);
-          //  console.log("Dest token returned from unoswap: ", destToken);
             
             return (_srcToken.get(), destToken, _amount, _minReturnAmount, address(0));
         } else if (selector == IAggregationRouterV6.unoswap2.selector) {
@@ -185,7 +183,6 @@ contract OneInchV6Decoder is IAspisDecoder {
         Address dex
     ) private view returns(address destToken) {
         destToken = getCurveCoinFromDex(dex);
-        //console.log("Curve in pool: ", destToken);
 
         if (destToken == ETH) {
             if (curveHasArgUseETH(dex) && !curveUseETH(dex)) {
@@ -195,19 +192,15 @@ contract OneInchV6Decoder is IAspisDecoder {
         else if (destToken == WETH) {
             if (curveHasArgUseETH(dex) && curveUseETH(dex)) {
                 destToken = ETH;
-                //console.log("Curve unwrapped it");
             }
         }
 
         if (!curveHasArgDestination(dex)) {
-            //console.log("Enters 1inch router");
             if (destToken == ETH && routerWrapsEthAfterCurveSwap(dex)) {
                 destToken == WETH;
-              //  console.log("1inch wrapped it");
             }
             else if (destToken == WETH && routerUnwrapsEthAfterCurveSwap(dex)) {
                 destToken == ETH;
-              //  console.log("1inch unwrapped it");
             }
         } 
     }
@@ -251,23 +244,11 @@ contract OneInchV6Decoder is IAspisDecoder {
         assembly {
             hasArg := and(shr(_CURVE_SWAP_HAS_ARG_USE_ETH_OFFSET, dex), 0x01)
         }
-        if (hasArg) {
-           // console.log("Has arg use ETH");
-        }
-        else {
-        //    console.log("No arg use ETH");
-        }
     }
 
     function curveUseETH(Address dex) private pure returns(bool useEth) {
         assembly {
             useEth := and(shr(_CURVE_SWAP_USE_ETH_OFFSET, dex), 0x01)
-        }
-        if (useEth) {
-         //   console.log("Use ETH");
-        }
-        else {
-         //   console.log("Dont use ETH");
         }
     }
 
