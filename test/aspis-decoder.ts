@@ -208,5 +208,16 @@ describe('Aspis-decoders', async () => {
           expect(result[0].toString()).to.be.equal(TOKENS[chainId].USDT);
           expect(result[1].toString()).to.be.equal(TOKENS[chainId].ETH);
         });
+
+        it('PancakeSwap V3 + Clipper RFQ : clipper swap : WBTC -> USDT', async () => {
+          const chainId = network.config.chainId!; 
+          // clipperSwap = 0xd2d374e5
+          const transactionData = '0xd2d374e5000000000000000000000000769728b5298445ba2828c0f3f5384227fbf590c50000000000000000000000002f2a2543b76a4166549f7aab2e75bef0aefc5b0f000000000000000000000000fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb90000000000000000000000000000000000000000000000000000000000007b9400000000000000000000000000000000000000000000000000000000012c7370000005a937e709600000000005f5e100016345785d8a000000c800fa663b2c951228f29779dac84e5f39dedbeabc512a070a8abc614340c1f9bfe2f1bb2f8f0721b947026093a6e9757655d272990a70b5feb0af9a7e143e8c2c1f2f28530456e26b9977';
+          
+          const result = await oneInchV6decoder.decodeExchangeInput(0, transactionData)
+  
+          expect(result[0].toString()).to.be.equal(TOKENS[chainId].WBTC);
+          expect(result[1].toString()).to.be.equal(TOKENS[chainId].USDT);
+        });
     });
 });
