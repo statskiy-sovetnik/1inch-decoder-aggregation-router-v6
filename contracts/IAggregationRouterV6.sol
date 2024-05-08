@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.10;
 
 interface IAggregationRouterV6 {
     struct SwapDescription {
@@ -61,5 +61,16 @@ interface IAggregationRouterV6 {
         uint256 dex, 
         uint256 dex2,
         uint256 dex3
+    ) external payable returns(uint256 returnAmount);
+
+    function clipperSwap(
+        address clipperExchange,
+        uint256 srcToken,
+        address dstToken,
+        uint256 inputAmount,
+        uint256 outputAmount,
+        uint256 goodUntil,
+        bytes32 r,
+        bytes32 vs
     ) external payable returns(uint256 returnAmount);
 }

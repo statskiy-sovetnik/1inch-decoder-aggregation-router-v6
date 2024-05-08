@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.10;
 
 import "./IAspisDecoder.sol";
 import "./1inchProtocolLib.sol";
@@ -33,6 +33,7 @@ contract OneInchV6Decoder is IAspisDecoder {
     uint256 private constant _CURVE_SWAP_HAS_ARG_USE_ETH_OFFSET = 243;
 
     address internal constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address private constant _ETH_ = address(0);
     address private immutable WETH;
 
     constructor(address weth) {
@@ -121,6 +122,21 @@ contract OneInchV6Decoder is IAspisDecoder {
             address destToken = getDestTokenFromDex(dex3);
 
             return (srcToken, destToken, value, minReturn, address(0));
+        }
+        else if (selector == IAggregationRouterV6.clipperSwap.selector) {
+            (
+                ,
+                Address _srcToken,
+                address _dstToken,
+                uint256 _inputAmount,
+                uint256 _outputAmount,,,
+            ) = abi.decode(inputData[4:], (address, Address, address, uint256,uint256,uint256,bytes32,bytes32));
+
+            // Clipper-like dex accepts zero address as ETH
+            address srcToken = _srcToken.get() == _ETH_ ? ETH : _srcToken.get();
+            address dstToken = _dstToken == _ETH_ ? ETH : _dstToken;
+
+            return (srcToken, dstToken, _inputAmount, _outputAmount, address(0));
         }
         else {
             revert("Cant decode");

@@ -4,11 +4,11 @@ import 'dotenv/config';
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.24",
+    version: "0.8.10",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 1000
+        runs: 2000
       }
     }
   },
@@ -22,6 +22,12 @@ const config: HardhatUserConfig = {
     arbitrum: {
       chainId: 42161,
       url: process.env.ALCHEMY_ARB_API_KEY!
+    }
+  },
+  etherscan: {
+    apiKey: {
+        mainnet: process.env.ETHERSCAN_API_KEY!,
+        arbitrumOne: process.env.ARBISCAN_API_KEY!,
     }
   }
 }

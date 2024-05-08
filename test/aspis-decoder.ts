@@ -196,6 +196,17 @@ describe('Aspis-decoders', async () => {
   
           expect(result[0].toString()).to.be.equal(TOKENS[chainId].LINK);
           expect(result[1].toString()).to.be.equal(TOKENS[chainId].FRAX);
-        });  
+        }); 
+
+        it('PancakeSwap V3 : clipper swap : USDT->ETH', async () => {
+          const chainId = network.config.chainId!; 
+          // clipperSwap = 0xd2d374e5
+          const transactionData = '0xd2d374e5000000000000000000000000769728b5298445ba2828c0f3f5384227fbf590c5000000000000000000000000fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001312d0000000000000000000000000000000000000000000000000000176c937bd5bd620000000005f45a7900000046a0051b80016345785d8a000000fa0064663afb4e9c36dcee23089d2629f4f2232f7a7eb8c4aafe85a94d1df941aef9b651281adc7f13ccd1d2e35a43ad92e49b03588db0e0c78892752ec5c8711a9b0c35d75ac0e26b9977';
+          
+          const result = await oneInchV6decoder.decodeExchangeInput(0, transactionData)
+  
+          expect(result[0].toString()).to.be.equal(TOKENS[chainId].USDT);
+          expect(result[1].toString()).to.be.equal(TOKENS[chainId].ETH);
+        });
     });
 });
